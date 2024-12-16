@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="users")
@@ -61,5 +60,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public User(@NotBlank(message = "Este es un mensaje personalizado.") String username,
+            @Email @NotBlank String email) {
+        this.username = username;
+        this.email = email;
     } 
+
+    
 }
