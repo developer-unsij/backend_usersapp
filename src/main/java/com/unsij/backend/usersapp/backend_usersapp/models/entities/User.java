@@ -31,6 +31,14 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    public User() {
+    }
+
+    public User(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
+
     public Long getId() {
         return id;
     }

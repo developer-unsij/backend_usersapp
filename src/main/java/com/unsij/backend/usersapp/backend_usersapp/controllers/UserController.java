@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.unsij.backend.usersapp.backend_usersapp.models.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import com.unsij.backend.usersapp.backend_usersapp.services.UserService;
 
 import jakarta.validation.Valid;
 
-//@CrossOrigin(origins = "http://localhost:5173") //
+//@CrossOrigin(origins = "http://localhost:5173") //una forma de habilitar el cors
 @CrossOrigin(originPatterns = "*")
 @RestController
 @RequestMapping("/users")
@@ -49,14 +50,18 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
+    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result, @PathVariable Long id) throws Exception {
         if(result.hasErrors()){
             return validation(result);
         }
-        Optional<User> userOptional = userService.update(user, id);
-        if (userOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(userOptional.orElseThrow());
-        }
+        try {
+            User updated = new User(user.getUsername(), user.getEmail());
+            Optional<User> userOptional = userService.update(updated, id);
+            if (userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.CREATED).body(userOptional.orElseThrow());
+            }
+        } catch (Exception e) { throw new Exception("Error al actualizar el usuario",e); }
+
         return ResponseEntity.notFound().build();
     }
 
