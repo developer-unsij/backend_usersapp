@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unsij.backend.usersapp.backend_usersapp.models.entities.User;
+import com.unsij.backend.usersapp.backend_usersapp.models.entities.UserRequest;
 import com.unsij.backend.usersapp.backend_usersapp.services.UserService;
 
 import jakarta.validation.Valid;
@@ -55,6 +56,9 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
     }
 
+    /* 
+    //Este es el que se utilizaba primero para trabajar con el anterior
+
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @RequestBody User user, BindingResult result, @PathVariable Long id) {
         if(result.hasErrors()){
@@ -66,6 +70,22 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+    */
+
+    //Este es utilizando la nueva clase de User Request 
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@Valid @RequestBody UserRequest user, BindingResult result, @PathVariable Long id) {
+        if(result.hasErrors()){
+            return validation(result);
+        }
+        Optional<User> userOptional = userService.update(user, id);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(userOptional.orElseThrow());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> remove(@PathVariable Long id){
