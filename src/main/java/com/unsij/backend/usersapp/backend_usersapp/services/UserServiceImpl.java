@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.unsij.backend.usersapp.backend_usersapp.models.UserRequest;
 import com.unsij.backend.usersapp.backend_usersapp.models.entities.User;
 import com.unsij.backend.usersapp.backend_usersapp.repositories.UserRepository;
 
@@ -38,13 +39,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Optional<User> update(User user, Long id) {
+    public Optional<User> update(UserRequest userRequest, Long id) {
         Optional<User> userOptional = this.findById(id);
         User userResult = null;
         if (userOptional.isPresent()) {
             User userDB = userOptional.orElseThrow();
-            userDB.setUsername(user.getUsername());
-            userDB.setEmail(user.getEmail());
+            userDB.setUsername(userRequest.getUsername());
+            userDB.setEmail(userRequest.getEmail());
             userResult = this.save(userDB);
             
         }
